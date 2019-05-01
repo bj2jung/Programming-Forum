@@ -1,59 +1,41 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const expressGraphQL = require("express-graphql");
-const schema = require("./schema.js");
+const graphqlHTTP = require("express-graphql");
+
+const schema = require("./graphql/schema/index");
+const resolver = require("./graphql/resolvers/index");
 
 const app = express();
-const port = 4000;
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 const mongoURI =
-  "mongodb+srv://brendon:12345@data-gp5tc.mongodb.net/test?retryWrites=true";
-
-mongoose.connect(`${mongoURI}`, { useNewUrlParser: true });
-
-const db = mongoose.connection;
-
-db.on("error", console.error.bind(console, "connection error:"));
+  "mongodb+srv://brendon:12345@data-gp5tc.mongodb.net/Programming_Forum?retryWrites=true";
 
 app.use(
   "/graphql",
-  expressGraphQL({
+  graphqlHTTP({
     schema: schema,
+    rootValue: resolver,
     graphiql: true
   })
 );
 
-// db.once("open", function() {
-//   console.log("mongoDB connected");
+const port = 4000;
 
-// var kittySchema = new mongoose.Schema({
-//   name: String
-// });
-
-// kittySchema.methods.speak = function() {
-//   var greeting = this.name
-//     ? "Meow name is " + this.name
-//     : "I don't have a name";
-//   console.log(greeting);
-// };
-
-// var Kitten = mongoose.model("Kitten", kittySchema);
-
-// var silence = new Kitten({ name: "Silence" });
-
-// var fluffy = new Kitten({ name: "Fluffy" });
-
-// fluffy.save(function(err, fluffy) {
-//   if (err) return console.error(err);
-//   fluffy.speak();
-// });
-
-// Kitten.find(function(err, kittens) {
-//   if (err) return console.error(err);
-//   console.log(kittens);
-// });
-// });
-
-// app.get("/", (req, res) => res.send("Hello World!"));
-
-app.listen(port, () => console.log(`App listening on port ${port}!`));
+mongoose
+  .connect(`${mongoURI}`, { useNewUrlParser: true })
+  .then(() => {
+    app.listen(port, () => console.log(`App listening on port ${port}!`));
+  })
+  .catch(err => {
+    console.log(err);
+  });

@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 
-var PostSchema = new mongoose.Schema({
+const Schema = mongoose.Schema;
+
+const PostSchema = new mongoose.Schema({
   isProject: {
-    type: boolean,
+    type: Boolean,
     required: true
   },
   title: {
@@ -30,7 +32,12 @@ var PostSchema = new mongoose.Schema({
   responseCount: {
     type: Number,
     required: true
+  },
+  creator: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true
   }
 });
 
-module.exports = Post = PostSchema;
+module.exports = Post = mongoose.model("Post", PostSchema);

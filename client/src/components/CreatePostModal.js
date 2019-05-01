@@ -20,7 +20,6 @@ class CreatePostModal extends React.Component {
       postDescriptionField: "",
       postLinksField: ""
     };
-
     this.toggle = this.toggle.bind(this);
   }
 
@@ -34,9 +33,33 @@ class CreatePostModal extends React.Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  handleSubmit(e) {
+  handleSubmit = e => {
     e.preventDefault();
-  }
+
+    const requestBody = {
+      query: `
+        mutation {
+          createPost(postInput:{isProject: true, title: "${
+            this.state.postTitleField
+          }", description: "${this.state.postDescriptionField}", links: "${
+        this.state.postLinksField
+      }", tags: "asdf", datePosted: "2019-04-30T20:06:19.881Z", viewCount: 4, responseCount: 5, creator:"zxcv"}) {
+            title
+          }
+        }
+      `
+    };
+
+    fetch("http://localhost:4000/graphql", {
+      method: "POST",
+      body: JSON.stringify(requestBody),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  };
 
   render() {
     return (
