@@ -43,7 +43,7 @@ class CreatePostModal extends React.Component {
             this.state.postTitleField
           }", description: "${this.state.postDescriptionField}", links: "${
         this.state.postLinksField
-      }", tags: "asdf", datePosted: "2019-04-30T20:06:19.881Z", viewCount: 4, responseCount: 5, creator:"zxcv"}) {
+      }", tags: "asdf", datePosted: "2019-04-30T20:06:19.881Z", viewCount: 0, responseCount: 0, creator:"zxcv"}) {
             title
           }
         }

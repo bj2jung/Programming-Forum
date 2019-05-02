@@ -1,33 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
+import { Query } from "react-apollo";
+import { gql } from "apollo-boost";
 
 function PostList() {
-  // example post list. Actual list to be populated from database
-
-  let listOfPosts = [
+  const GET_POSTS = gql`
     {
-      project: true,
-      title: "Example project post",
-      description: "Example description",
-      skillTags: ["JavaScript", "HTML", "CSS"],
-      status: "prototype",
-      links: ["https://github.com"]
-    },
-    {
-      project: false,
-      title: "Example individual post",
-      description: "Example description",
-      skillTags: ["Java", "Ruby", "JavaScript"],
-      links: ["https://github.com/bj2jung"]
+      posts {
+        _id
+        title
+      }
     }
-  ];
-
-  const [postList] = useState(listOfPosts);
+  `;
 
   return (
-    <div>
-      <ul>{postList[0].title}</ul>
-      <ul>{postList[1].title}</ul>
-    </div>
+    <Query pollInterval={1000} query={GET_POSTS}>
+      {({ loading, error, data }) => {
+        if (loading) return <p>Loading...</p>;
+        if (error) return <p>Error :(</p>;
+
+        return data.posts.map(({ title, _id }) => (
+          <div key={_id}>
+            <p>{title}</p>
+          </div>
+        ));
+      }}
+    </Query>
   );
 }
 
