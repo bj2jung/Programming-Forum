@@ -31,7 +31,7 @@ const resolver = {
       description: args.postInput.description,
       links: args.postInput.links,
       tags: args.postInput.tags,
-      datePosted: new Date(args.postInput.datePosted),
+      dateCreated: new Date(args.postInput.dateCreated),
       viewCount: args.postInput.viewCount,
       responseCount: args.postInput.responseCount,
       creator: "5cc8f6fb52acfa1194677238"

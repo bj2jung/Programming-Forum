@@ -6,7 +6,10 @@ import {
   ModalBody,
   ModalFooter,
   Input,
-  Form
+  Form,
+  FormGroup,
+  Label,
+  CustomInput
 } from "reactstrap";
 import AddTagsModal from "./AddTagsModal";
 import { Mutation } from "react-apollo";
@@ -18,6 +21,7 @@ class CreatePostModal extends React.Component {
     this.state = {
       modal: false,
       unmountOnClose: true,
+      isProjectField: true,
       postTitleField: "",
       postDescriptionField: "",
       postLinksField: ""
@@ -37,11 +41,13 @@ class CreatePostModal extends React.Component {
 
   render() {
     const CREATE_POST = gql`
-mutation {createPost(postInput:{isProject: true, title: "${
-      this.state.postTitleField
-    }", description: "${this.state.postDescriptionField}", links: "${
+mutation {createPost(postInput:{isProject: ${
+      this.state.isProjectField
+    }, title: "${this.state.postTitleField}", description: "${
+      this.state.postDescriptionField
+    }", links: "${
       this.state.postLinksField
-    }", tags: "asdf", datePosted: "2019-04-30T20:06:19.881Z", viewCount: 0, responseCount: 0, creator:"zxcv"}) {
+    }", tags: "", dateCreated: "${new Date().toISOString()}", viewCount: 0, responseCount: 0, creator:"bj2jung@gmail.com"}) {
           _id
         }
       }
@@ -71,6 +77,20 @@ mutation {createPost(postInput:{isProject: true, title: "${
                 }}
               >
                 <ModalBody>
+                  <FormGroup check>
+                    <CustomInput
+                      type="radio"
+                      id="exampleCustomRadio"
+                      name="customRadio"
+                      label="I am posting a project"
+                    />
+                    <CustomInput
+                      type="radio"
+                      id="exampleCustomRadio2"
+                      name="customRadio"
+                      label="I am looking for a project/team"
+                    />
+                  </FormGroup>
                   <Input
                     type="text"
                     name="postTitleField"
