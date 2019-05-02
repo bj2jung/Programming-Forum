@@ -23,21 +23,7 @@ const resolver = {
       });
   },
 
-  // posts: () => {
-  //   return Post.find()
-  //     .then(posts => {
-  //       return posts.map(post => {
-  //         return {
-  //           post,
-  //           creator: user.bind(this, post.creator)
-  //         };
-  //       });
-  //     })
-  //     .catch(err => {
-  //       throw err;
-  //     });
-  // },
-
+  // create a post, save post in database, add post to user's createdPosts list
   createPost: args => {
     const post = new Post({
       isProject: args.postInput.isProject,
@@ -50,16 +36,16 @@ const resolver = {
       responseCount: args.postInput.responseCount,
       creator: "5cc8f6fb52acfa1194677238"
     });
-    return post
+
+    post
       .save()
-      .then(post => {
-        return User.findById("5cc8f6fb52acfa1194677238");
+      .then(() => {
+        return User.findById(post.creator);
       })
       .then(user => {
         user.createdPosts.push(post);
-        return user.save();
-      })
-      .catch(err => console.log(err));
+        user.save();
+      });
   },
 
   createUser: args => {

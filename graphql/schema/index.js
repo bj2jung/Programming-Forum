@@ -25,7 +25,6 @@ module.exports = schema = buildSchema(`
         posts: [Post]
       } 
       
-
       input PostInput {
         isProject: Boolean!
         title: String!
