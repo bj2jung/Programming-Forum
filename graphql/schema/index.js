@@ -23,6 +23,7 @@ module.exports = schema = buildSchema(`
 
       type RootQuery{
         posts: [Post]
+        getPostDetails(postId: String): Post
       } 
       
       input PostInput {

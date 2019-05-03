@@ -1,22 +1,17 @@
 import React from "react";
-import PostList from "./components/PostList";
-import CreatePostModal from "./components/CreatePostModal";
-import { ApolloProvider } from "react-apollo";
-import ApolloClient from "apollo-boost";
-// import { gql } from "apollo-boost";
+import Home from "./pages/Home";
+import Post from "./pages/Post";
 
-const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql"
-});
+import { Route, Switch } from "react-router-dom";
 
 function App() {
   return (
-    <ApolloProvider client={client}>
-      <div>
-        <CreatePostModal />
-        <PostList />
-      </div>
-    </ApolloProvider>
+    <div>
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route path="/post/:postId" component={Post} />
+      </Switch>
+    </div>
   );
 }
 

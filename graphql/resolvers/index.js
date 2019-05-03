@@ -1,6 +1,13 @@
 const Post = require("../../models/Post");
 const User = require("../../models/User");
 
+// const findUserId = userEmail => {
+//   User.findOne({ email: userEmail }).then(user => {
+//     // console.log(user._id);
+//     return user._id;
+//   });
+// };
+
 // const user = userId => {
 //   return User.findById(userId)
 //     .then(user => {
@@ -23,6 +30,17 @@ const resolver = {
       });
   },
 
+  // return details of a single post
+  getPostDetails: args => {
+    const postId = args.postId;
+
+    return Post.findById(postId)
+      .then(post => {
+        return post;
+      })
+      .catch(err => console.log(err));
+  },
+
   // create a post, save post in database, add post to user's createdPosts list
   createPost: args => {
     const post = new Post({
@@ -34,7 +52,7 @@ const resolver = {
       dateCreated: new Date(args.postInput.dateCreated),
       viewCount: args.postInput.viewCount,
       responseCount: args.postInput.responseCount,
-      creator: "5cc8f6fb52acfa1194677238"
+      creator: args.postInput.creator
     });
 
     post

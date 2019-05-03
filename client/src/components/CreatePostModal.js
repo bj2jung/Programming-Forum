@@ -8,7 +8,7 @@ import {
   Input,
   Form,
   FormGroup,
-  Label,
+  // Label,
   CustomInput
 } from "reactstrap";
 import AddTagsModal from "./AddTagsModal";
@@ -47,7 +47,7 @@ mutation {createPost(postInput:{isProject: ${
       this.state.postDescriptionField
     }", links: "${
       this.state.postLinksField
-    }", tags: "", dateCreated: "${new Date().toISOString()}", viewCount: 0, responseCount: 0, creator:"bj2jung@gmail.com"}) {
+    }", tags: "", dateCreated: "${new Date().toISOString()}", viewCount: 0, responseCount: 0, creator:"5cc8f729d713db15b0f6e32a"}) {
           _id
         }
       }
