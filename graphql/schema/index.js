@@ -7,7 +7,7 @@ module.exports = schema = buildSchema(`
         title: String!
         description: String!
         links: String
-        tags: String
+        tags: [String]
         dateCreated: String!
         viewCount: Int!
         responseCount: Int!
@@ -31,7 +31,7 @@ module.exports = schema = buildSchema(`
         title: String!
         description: String!
         links: String
-        tags: String
+        tags: [String]
         dateCreated: String!
         viewCount: Int!
         responseCount: Int!

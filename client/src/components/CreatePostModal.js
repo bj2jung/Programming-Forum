@@ -8,7 +8,6 @@ import {
   Input,
   Form,
   FormGroup,
-  // Label,
   CustomInput
 } from "reactstrap";
 import AddTagsModal from "./AddTagsModal";
@@ -24,7 +23,8 @@ class CreatePostModal extends React.Component {
       isProjectField: true,
       postTitleField: "",
       postDescriptionField: "",
-      postLinksField: ""
+      postLinksField: "",
+      tags: []
     };
     this.toggle = this.toggle.bind(this);
   }
@@ -39,7 +39,17 @@ class CreatePostModal extends React.Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
+  retrieveTagsArray = arr => {
+    this.setState({
+      tags: arr
+    });
+  };
+
   render() {
+    let arrString = "[";
+    this.state.tags.forEach(el => (arrString += '"' + el + '",'));
+    arrString += "]";
+
     const CREATE_POST = gql`
 mutation {createPost(postInput:{isProject: ${
       this.state.isProjectField
@@ -47,7 +57,7 @@ mutation {createPost(postInput:{isProject: ${
       this.state.postDescriptionField
     }", links: "${
       this.state.postLinksField
-    }", tags: "", dateCreated: "${new Date().toISOString()}", viewCount: 0, responseCount: 0, creator:"5cc8f729d713db15b0f6e32a"}) {
+    }", tags: ${arrString}, dateCreated: "${new Date().toISOString()}", viewCount: 0, responseCount: 0, creator:"5cc8f729d713db15b0f6e32a"}) {
           _id
         }
       }
@@ -113,7 +123,7 @@ mutation {createPost(postInput:{isProject: ${
                     value={this.state.postLinksField}
                     onChange={e => this.handleChange(e)}
                   />
-                  <AddTagsModal />
+                  <AddTagsModal retrieveTagsArray={this.retrieveTagsArray} />
                 </ModalBody>
                 <ModalFooter>
                   <Button color="primary" type="submit" onClick={this.toggle}>

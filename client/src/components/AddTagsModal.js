@@ -6,19 +6,22 @@ import {
   ModalBody,
   ModalFooter,
   Input,
-  // Form,
   FormGroup
 } from "reactstrap";
+
+const listOfTags = ["JavaScript", "HTML", "CSS", "React", "etc"];
 
 class AddTagsModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       modal: false,
-      unmountOnClose: true
+      unmountOnClose: true,
+      tags: []
     };
 
     this.toggle = this.toggle.bind(this);
+    this.updateTags = this.updateTags.bind(this);
   }
 
   toggle() {
@@ -27,12 +30,40 @@ class AddTagsModal extends React.Component {
     }));
   }
 
-  updateTagList() {
-    let tagList = [1, 2, 3];
+  handleCheckboxCheck(e) {
+    let arr = this.state.tags;
+    if (e.target.checked) {
+      arr.push(e.target.value);
+      this.setState({
+        tags: arr
+      });
+    } else if (!e.target.checked) {
+      this.setState({
+        tags: arr.filter(tag => {
+          return tag !== e.target.value;
+        })
+      });
+    }
+  }
 
-    this.setState({
-      tagList: tagList
-    });
+  createTagCheckBox = tagName => (
+    <FormGroup check key={tagName}>
+      <Input
+        type="checkbox"
+        onChange={e => this.handleCheckboxCheck(e)}
+        value={tagName}
+      />
+      {tagName}
+    </FormGroup>
+  );
+
+  createTagCheckBoxes = () => {
+    return listOfTags.map(tagName => this.createTagCheckBox(tagName));
+  };
+
+  updateTags() {
+    this.toggle();
+    this.props.retrieveTagsArray(this.state.tags);
   }
 
   render() {
@@ -53,28 +84,12 @@ class AddTagsModal extends React.Component {
           {/* <Form
             onSubmit={e => {
               e.preventDefault();
-              this.updateTagList();
+              this.updateTags();
             }}
           > */}
-          <ModalBody>
-            <FormGroup check>
-              <Input type="checkbox" /> JavaScript
-            </FormGroup>
-            <FormGroup check>
-              <Input type="checkbox" /> HTML
-            </FormGroup>
-            <FormGroup check>
-              <Input type="checkbox" /> CSS
-            </FormGroup>
-            <FormGroup check>
-              <Input type="checkbox" /> React
-            </FormGroup>
-            <FormGroup check>
-              <Input type="checkbox" /> etcetcetc
-            </FormGroup>
-          </ModalBody>
+          <ModalBody>{this.createTagCheckBoxes()}</ModalBody>
           <ModalFooter>
-            <Button type="submit" color="primary" onClick={this.toggle}>
+            <Button type="submit" color="primary" onClick={this.updateTags}>
               Add
             </Button>
           </ModalFooter>

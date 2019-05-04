@@ -15,8 +15,8 @@ const Post = ({ match }) => {
   return (
     <Query pollInterval={1000} query={GET_POST_DETAILS}>
       {({ loading, error, data }) => {
-        if (loading) return <p>Loading...</p>;
-        if (error) return <p>Error :(</p>;
+        if (loading) return <p />;
+        if (error) return <p />;
 
         return (
           <div>

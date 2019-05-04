@@ -55,6 +55,8 @@ const resolver = {
       creator: args.postInput.creator
     });
 
+    console.log(post.tags);
+
     post
       .save()
       .then(() => {
