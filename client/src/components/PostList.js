@@ -8,6 +8,7 @@ function PostList() {
   const GET_POSTLIST = gql`
     {
       posts {
+        isProject
         _id
         title
         tags
@@ -22,16 +23,19 @@ function PostList() {
         if (error) return <p>Error :(</p>;
 
         if (data) {
-          let whatever = data.posts.map(({ title, _id, tags }) => (
+          let whatever = data.posts.map(({ isProject, title, _id, tags }) => (
             <div key={_id}>
-              <Link to={`/post/${_id}`}>
-                {title}
-                {tags.map(tag => (
-                  <Badge key={tag} color="warning">
-                    {tag}
-                  </Badge>
-                ))}
-              </Link>
+              <p>
+                <h5>{isProject ? "Project" : "Looking for Team"}</h5>
+                <Link to={`/post/${_id}`}>
+                  {title}
+                  {tags.map(tag => (
+                    <Badge key={tag} color="warning">
+                      {tag}
+                    </Badge>
+                  ))}
+                </Link>
+              </p>
             </div>
           ));
 

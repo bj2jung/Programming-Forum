@@ -93,12 +93,20 @@ mutation {createPost(postInput:{isProject: ${
                       id="exampleCustomRadio"
                       name="customRadio"
                       label="I am posting a project"
+                      checked={this.state.isProjectField}
+                      onChange={e =>
+                        this.setState({ isProjectField: e.target.checked })
+                      }
                     />
                     <CustomInput
                       type="radio"
                       id="exampleCustomRadio2"
                       name="customRadio"
                       label="I am looking for a project/team"
+                      checked={!this.state.isProjectField}
+                      onChange={e =>
+                        this.setState({ isProjectField: !e.target.checked })
+                      }
                     />
                   </FormGroup>
                   <Input
