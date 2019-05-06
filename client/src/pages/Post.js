@@ -11,6 +11,7 @@ const Post = ({ match }) => {
         title
         description
         tags
+        dateCreated
       }
     }
   `;
@@ -23,9 +24,7 @@ const Post = ({ match }) => {
 
         return (
           <div>
-            <h3>
-              {data.getPostDetails.isProject ? "Project" : "Looking for Team"}
-            </h3>
+            <h5>{data.getPostDetails.isProject ? "Project" : "Individual"}</h5>
             <h3>{data.getPostDetails.title}</h3>
             <p>
               {data.getPostDetails.tags.map(tag => (
@@ -33,6 +32,9 @@ const Post = ({ match }) => {
                   {tag}
                 </Badge>
               ))}
+            </p>
+            <p>
+              {new Date(Number(data.getPostDetails.dateCreated)).toDateString()}
             </p>
             <p>{data.getPostDetails.description}</p>
           </div>
