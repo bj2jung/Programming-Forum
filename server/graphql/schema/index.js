@@ -22,7 +22,7 @@ module.exports = schema = buildSchema(`
       }
 
       type RootQuery{
-        posts: [Post]
+        posts(filterInput: FilterInput): [Post]
         getPostDetails(postId: String): Post
       } 
       
@@ -36,6 +36,10 @@ module.exports = schema = buildSchema(`
         viewCount: Int!
         responseCount: Int!
         creator: String!
+      }
+
+      input FilterInput {
+        tags: [String]
       }
 
       input UserInput {

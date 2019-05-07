@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Query } from "react-apollo";
 import { gql } from "apollo-boost";
 import { Link } from "react-router-dom";
@@ -17,9 +17,22 @@ function PostList() {
     }
   `;
 
+  // const GET_FILTEREDPOSTLIST = gql`
+  //   {
+  //     postsFiltered(filterInput: { tags: ["HTML", "React"] }) {
+  //       isProject
+  //       _id
+  //       title
+  //       tags
+  //     }
+  //   }
+  // `;
+
   const postStyle = {
     display: "inline"
   };
+
+  const [postList, setPostList] = useState([]);
 
   return (
     <div>
@@ -30,48 +43,23 @@ function PostList() {
           if (error) return <p>Error :(</p>;
 
           if (data) {
-            let list = data.posts
-              // .filter(({ isProject }) => {
-              //   return isProject === true;
-              // })
-              .map(({ isProject, title, _id, tags }) => (
-                <div key={_id}>
-                  <p>
-                    <Link to={`/post/${_id}`}>
-                      <h5 style={postStyle}>
-                        {isProject ? "Project: " : "Individual: "}
-                      </h5>
-                      {title}
-                      {tags.map(tag => (
-                        <Badge key={tag} color="warning">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </Link>
-                  </p>
-                </div>
-              ));
+            let list = data.posts.map(({ isProject, title, _id, tags }) => (
+              <div key={_id}>
+                <Link to={`/post/${_id}`}>
+                  <h5 style={postStyle}>
+                    {isProject ? "Project: " : "Individual: "}
+                  </h5>
+                  {title}
+                  {tags.map(tag => (
+                    <Badge key={tag} color="warning">
+                      {tag}
+                    </Badge>
+                  ))}
+                </Link>
+              </div>
+            ));
 
             return list;
-            // let list = data.posts.map(({ isProject, title, _id, tags }) => (
-            //   <div key={_id}>
-            //     <p>
-            //       <Link to={`/post/${_id}`}>
-            //         <h5 style={postStyle}>
-            //           {isProject ? "Project: " : "Individual: "}
-            //         </h5>
-            //         {title}
-            //         {tags.map(tag => (
-            //           <Badge key={tag} color="warning">
-            //             {tag}
-            //           </Badge>
-            //         ))}
-            //       </Link>
-            //     </p>
-            //   </div>
-            // ));
-
-            // return list;
           }
         }}
       </Query>
