@@ -4,31 +4,78 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter
-  //   Input,
-  //   Form,
-  //   FormGroup,
-  //   CustomInput
+  ModalFooter,
+  Input,
+  FormGroup
 } from "reactstrap";
-// import AddTagsModal from "./AddTagsModal";
-// import { Mutation } from "react-apollo";
-// import { gql } from "apollo-boost";
+import queryString from "query-string";
+
+import listOfTags from "../assets/listOfTags";
+
+import { createBrowserHistory } from "history";
+const history = createBrowserHistory({ forceRefresh: true });
 
 class FilterModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       modal: false,
-      unmountOnClose: true
+      unmountOnClose: true,
+      isProject: null,
+      tags: []
     };
     this.toggle = this.toggle.bind(this);
   }
 
+  handleTagCheckboxCheck(e) {
+    let arr = this.state.tags;
+    if (e.target.checked) {
+      arr.push(e.target.value);
+      this.setState({
+        tags: arr
+      });
+    } else if (!e.target.checked) {
+      this.setState({
+        tags: arr.filter(tag => {
+          return tag !== e.target.value;
+        })
+      });
+    }
+  }
+
+  handleIsProjectCheckboxCheck(e) {}
+
   toggle() {
     this.setState(prevState => ({
-      modal: !prevState.modal
+      modal: !prevState.modal,
+      tags: [],
+      isProject: null
     }));
   }
+
+  createTagCheckBox = tagName => (
+    <FormGroup check key={tagName}>
+      <Input
+        type="checkbox"
+        onChange={e => this.handleTagCheckboxCheck(e)}
+        value={tagName}
+      />
+      {tagName}
+    </FormGroup>
+  );
+
+  createTagCheckBoxes = () => {
+    return listOfTags.map(tagName => this.createTagCheckBox(tagName));
+  };
+
+  handleApplyFilter = () => {
+    const filterQueryString = queryString.stringify(
+      { filter: this.state.tags },
+      { arrayFormat: "comma" }
+    );
+    this.toggle();
+    history.push(`/?${filterQueryString}`);
+  };
 
   render() {
     return (
@@ -43,9 +90,33 @@ class FilterModal extends React.Component {
           unmountOnClose={this.state.unmountOnClose}
         >
           <ModalHeader toggle={this.toggle}>Filter Posts</ModalHeader>
-          <ModalBody>{}</ModalBody>
+          <ModalBody>
+            <FormGroup check key="Project">
+              <Input
+                type="checkbox"
+                onChange={e => this.handleIsProjectCheckboxCheck(e)}
+                value="Project"
+                defaultChecked={true}
+              />
+              Project
+            </FormGroup>
+            <FormGroup check key="Individual">
+              <Input
+                type="checkbox"
+                onChange={e => this.handleIsProjectCheckboxCheck(e)}
+                value="Individual"
+                defaultChecked={true}
+              />
+              Individual
+            </FormGroup>
+          </ModalBody>
+          <ModalBody>{this.createTagCheckBoxes()}</ModalBody>
           <ModalFooter>
-            <Button type="submit" color="primary">
+            <Button
+              type="submit"
+              color="primary"
+              onClick={this.handleApplyFilter}
+            >
               Apply
             </Button>
           </ModalFooter>

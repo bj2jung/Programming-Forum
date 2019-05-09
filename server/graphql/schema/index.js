@@ -22,7 +22,8 @@ module.exports = schema = buildSchema(`
       }
 
       type RootQuery{
-        posts(filterInput: FilterInput): [Post]
+        posts: [Post]
+        postsFilteredByTags(filterInput: FilterInput): [Post]
         getPostDetails(postId: String): Post
       } 
       

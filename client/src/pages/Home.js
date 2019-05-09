@@ -3,7 +3,7 @@ import React from "react";
 import PostList from "../components/PostList";
 import CreatePostModal from "../components/CreatePostModal";
 
-function Home() {
+function Home({ match }) {
   return (
     <div>
       <CreatePostModal />

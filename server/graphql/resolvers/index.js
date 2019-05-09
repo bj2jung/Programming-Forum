@@ -20,33 +20,20 @@ const User = require("../../models/User");
 
 const resolver = {
   // find the latest 20 posts in reverse order
-  // posts: () => {
-  //   return (postList = Post.find()
-  //     .sort({ dateCreated: -1 })
-  //     .limit(20));
-  // },
+  posts: () => {
+    return (postList = Post.find()
+      .sort({ dateCreated: -1 })
+      .limit(20));
+  },
 
-  posts: args => {
-    const tags = args ? args.filterInput.tags : [];
-
-    return Post.find({ tags: { $all: tags } })
+  postsFilteredByTags: args => {
+    return Post.find({ tags: { $all: args.filterInput.tags } })
       .sort({ dateCreated: -1 })
       .limit(20)
       .then(post => {
         return post;
       });
   },
-
-  // // find all posts
-  // posts: () => {
-  //   return Post.find()
-  //     .then(post => {
-  //       return post;
-  //     })
-  //     .catch(err => {
-  //       throw err;
-  //     });
-  // },
 
   // return details of a single post
   getPostDetails: args => {

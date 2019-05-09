@@ -9,7 +9,7 @@ import {
   FormGroup
 } from "reactstrap";
 
-const listOfTags = ["JavaScript", "HTML", "CSS", "React", "etc"];
+import listOfTags from "../assets/listOfTags";
 
 class AddTagsModal extends React.Component {
   constructor(props) {
@@ -69,11 +69,9 @@ class AddTagsModal extends React.Component {
   render() {
     return (
       <div>
-        {/* <Form inline onSubmit={e => e.preventDefault()}> */}
         <Button color="secondary" onClick={this.toggle}>
           Add Languages/Skills
         </Button>
-        {/* </Form> */}
         <Modal
           isOpen={this.state.modal}
           toggle={this.toggle}
@@ -81,19 +79,13 @@ class AddTagsModal extends React.Component {
           unmountOnClose={this.state.unmountOnClose}
         >
           <ModalHeader toggle={this.toggle}>Add Languagues/Skills</ModalHeader>
-          {/* <Form
-            onSubmit={e => {
-              e.preventDefault();
-              this.updateTags();
-            }}
-          > */}
+
           <ModalBody>{this.createTagCheckBoxes()}</ModalBody>
           <ModalFooter>
             <Button type="submit" color="primary" onClick={this.updateTags}>
               Add
             </Button>
           </ModalFooter>
-          {/* </Form> */}
         </Modal>
       </div>
     );
