@@ -21,7 +21,7 @@ class FilterModal extends React.Component {
     this.state = {
       modal: false,
       unmountOnClose: true,
-      isProject: null,
+      isProject: 0,
       tags: []
     };
     this.toggle = this.toggle.bind(this);
@@ -43,14 +43,69 @@ class FilterModal extends React.Component {
     }
   }
 
-  handleIsProjectCheckboxCheck(e) {}
+  handleIsProjectCheckboxCheck(e) {
+    const isProjectCheckBoxes = document.querySelectorAll(".isProjectCheckBox");
+    const tempValue =
+      (isProjectCheckBoxes[0].checked ? 1 : 0) +
+      (isProjectCheckBoxes[1].checked ? 2 : 0);
+
+    this.setState({
+      isProject: tempValue
+    });
+  }
+
+  isProjectCheckboxDefaultChecked(option) {
+    if (option === "Project" && this.props.currentIsProjectFilter === "1") {
+      return true;
+    } else if (
+      option === "Individual" &&
+      this.props.currentIsProjectFilter === "2"
+    ) {
+      return true;
+    } else if (
+      this.props.currentIsProjectFilter === "0" ||
+      this.props.currentIsProjectFilter === "3"
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  createIsProjectCheckBox = option => (
+    <FormGroup check key={option}>
+      <Input
+        type="checkbox"
+        onChange={e => this.handleIsProjectCheckboxCheck(e)}
+        value={option}
+        className="isProjectCheckBox"
+        defaultChecked={this.isProjectCheckboxDefaultChecked(option)}
+      />
+      {option}
+    </FormGroup>
+  );
+
+  createIsProjectCheckBoxes = () => {
+    return ["Project", "Individual"].map(option =>
+      this.createIsProjectCheckBox(option)
+    );
+  };
+
+  clearFilter = () => {
+    history.push(`/`);
+  };
 
   toggle() {
     this.setState(prevState => ({
       modal: !prevState.modal,
-      tags: [],
-      isProject: null
+      tags: []
     }));
+    if (!this.state.modal) {
+      this.setState({
+        isProject: 0,
+        tags: this.props.currentTagFilter
+      });
+    }
   }
 
   createTagCheckBox = tagName => (
@@ -59,6 +114,7 @@ class FilterModal extends React.Component {
         type="checkbox"
         onChange={e => this.handleTagCheckboxCheck(e)}
         value={tagName}
+        defaultChecked={this.props.currentTagFilter.includes(tagName)}
       />
       {tagName}
     </FormGroup>
@@ -70,7 +126,7 @@ class FilterModal extends React.Component {
 
   handleApplyFilter = () => {
     const filterQueryString = queryString.stringify(
-      { filter: this.state.tags },
+      { tags: this.state.tags, isProject: this.state.isProject },
       { arrayFormat: "comma" }
     );
     this.toggle();
@@ -83,6 +139,9 @@ class FilterModal extends React.Component {
         <Button color="secondary" onClick={this.toggle}>
           Filter Posts
         </Button>
+        <Button color="secondary" onClick={this.clearFilter}>
+          Clear Filter
+        </Button>
         <Modal
           isOpen={this.state.modal}
           toggle={this.toggle}
@@ -90,26 +149,7 @@ class FilterModal extends React.Component {
           unmountOnClose={this.state.unmountOnClose}
         >
           <ModalHeader toggle={this.toggle}>Filter Posts</ModalHeader>
-          <ModalBody>
-            <FormGroup check key="Project">
-              <Input
-                type="checkbox"
-                onChange={e => this.handleIsProjectCheckboxCheck(e)}
-                value="Project"
-                defaultChecked={true}
-              />
-              Project
-            </FormGroup>
-            <FormGroup check key="Individual">
-              <Input
-                type="checkbox"
-                onChange={e => this.handleIsProjectCheckboxCheck(e)}
-                value="Individual"
-                defaultChecked={true}
-              />
-              Individual
-            </FormGroup>
-          </ModalBody>
+          <ModalBody>{this.createIsProjectCheckBoxes()}</ModalBody>
           <ModalBody>{this.createTagCheckBoxes()}</ModalBody>
           <ModalFooter>
             <Button

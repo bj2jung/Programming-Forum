@@ -8,32 +8,30 @@ import queryString from "query-string";
 import FilterModal from "../components/FilterModal";
 
 function PostList() {
-  let filterQueryArr = queryString.parse(window.location.search, {
+  let tagFilterQueryArr = queryString.parse(window.location.search, {
     arrayFormat: "comma"
-  }).filter;
+  }).tags;
 
-  if (!filterQueryArr || filterQueryArr === "") {
-    filterQueryArr = null;
-  } else if (typeof filterQueryArr === "string") {
-    filterQueryArr = [filterQueryArr];
+  if (!tagFilterQueryArr || tagFilterQueryArr === "") {
+    tagFilterQueryArr = [];
+  } else if (typeof tagFilterQueryArr === "string") {
+    tagFilterQueryArr = [tagFilterQueryArr];
   }
 
-  const [tagFilterArr, setTagFilterArr] = useState(filterQueryArr);
+  let isProjectQueryNum = queryString.parse(window.location.search).isProject;
+  if (isProjectQueryNum === undefined) {
+    isProjectQueryNum = 0;
+  }
+
+  const [tagFilterArr, setTagFilterArr] = useState(tagFilterQueryArr);
+  const [isProjectFilterNum, setIsProjectFilterNum] = useState(
+    isProjectQueryNum
+  );
 
   useEffect(() => {
-    setTagFilterArr(filterQueryArr);
-  }, [filterQueryArr]);
-
-  const GET_ALL_POSTS = gql`
-    query {
-      posts {
-        isProject
-        _id
-        title
-        tags
-      }
-    }
-  `;
+    setTagFilterArr(tagFilterQueryArr);
+    setIsProjectFilterNum(isProjectQueryNum);
+  }, [tagFilterQueryArr, isProjectQueryNum]);
 
   function createFilterQuery(isProject, tags) {
     let arrString = "";
@@ -45,7 +43,7 @@ function PostList() {
 
     return gql`
     query {
-      postsFilteredByTags(filterInput: { tags: ${arrString} }) {
+      postsFilteredByTags(filterInput: { isProject:${isProject}, tags: ${arrString} }) {
         isProject
         _id
         title
@@ -61,37 +59,18 @@ function PostList() {
 
   return (
     <div>
-      <FilterModal />
+      <FilterModal
+        currentIsProjectFilter={isProjectFilterNum}
+        currentTagFilter={tagFilterArr}
+      />
 
       <Query
-        pollInterval={1000}
-        query={
-          filterQueryArr ? createFilterQuery(true, tagFilterArr) : GET_ALL_POSTS
-        }
+        pollInterval={2000}
+        query={createFilterQuery(isProjectFilterNum, tagFilterArr)}
       >
         {({ loading, error, data }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
-
-          if (data.posts) {
-            let list = data.posts.map(({ isProject, title, _id, tags }) => (
-              <div key={_id}>
-                <Link to={`/post/${_id}`}>
-                  <h5 style={postStyle}>
-                    {isProject ? "Project: " : "Individual: "}
-                  </h5>
-                  {title}
-                  {tags.map(tag => (
-                    <Badge key={tag} color="warning">
-                      {tag}
-                    </Badge>
-                  ))}
-                </Link>
-              </div>
-            ));
-
-            return list;
-          }
 
           if (data.postsFilteredByTags) {
             let list = data.postsFilteredByTags.map(

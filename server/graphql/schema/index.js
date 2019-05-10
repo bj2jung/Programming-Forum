@@ -22,7 +22,6 @@ module.exports = schema = buildSchema(`
       }
 
       type RootQuery{
-        posts: [Post]
         postsFilteredByTags(filterInput: FilterInput): [Post]
         getPostDetails(postId: String): Post
       } 
@@ -40,6 +39,7 @@ module.exports = schema = buildSchema(`
       }
 
       input FilterInput {
+        isProject: Int
         tags: [String]
       }
 

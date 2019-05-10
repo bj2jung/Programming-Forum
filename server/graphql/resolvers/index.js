@@ -19,20 +19,30 @@ const User = require("../../models/User");
 // };
 
 const resolver = {
-  // find the latest 20 posts in reverse order
-  posts: () => {
-    return (postList = Post.find()
-      .sort({ dateCreated: -1 })
-      .limit(20));
-  },
-
+  // return 20 latests posts (with or without filter applied)
   postsFilteredByTags: args => {
-    return Post.find({ tags: { $all: args.filterInput.tags } })
+    let filterCondition = {};
+
+    if (args.filterInput.tags.length > 0) {
+      filterCondition = {
+        tags: { $all: args.filterInput.tags }
+      };
+    }
+
+    if (args.filterInput.isProject === 1) {
+      filterCondition.isProject = true;
+    } else if (args.filterInput.isProject === 2) {
+      filterCondition.isProject = false;
+    }
+
+    if (filterCondition === {}) {
+      filterCondition = null;
+    }
+
+    return Post.find(filterCondition)
       .sort({ dateCreated: -1 })
       .limit(20)
-      .then(post => {
-        return post;
-      });
+      .catch(err => console.log(err));
   },
 
   // return details of a single post
