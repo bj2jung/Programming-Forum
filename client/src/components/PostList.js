@@ -7,8 +7,8 @@ import queryString from "query-string";
 
 import FilterModal from "../components/FilterModal";
 
-function PostList() {
-  let tagFilterQueryArr = queryString.parse(window.location.search, {
+function PostList(props) {
+  let tagFilterQueryArr = queryString.parse(props.filter, {
     arrayFormat: "comma"
   }).tags;
 
@@ -18,20 +18,14 @@ function PostList() {
     tagFilterQueryArr = [tagFilterQueryArr];
   }
 
-  let isProjectQueryNum = queryString.parse(window.location.search).isProject;
+  let isProjectQueryNum = queryString.parse(props.filter).isProject;
   if (isProjectQueryNum === undefined) {
     isProjectQueryNum = 0;
   }
 
-  const [tagFilterArr, setTagFilterArr] = useState(tagFilterQueryArr);
-  const [isProjectFilterNum, setIsProjectFilterNum] = useState(
-    isProjectQueryNum
-  );
-
   useEffect(() => {
-    setTagFilterArr(tagFilterQueryArr);
-    setIsProjectFilterNum(isProjectQueryNum);
-  }, [tagFilterQueryArr, isProjectQueryNum]);
+    console.log("Effect function ran");
+  });
 
   function createFilterQuery(isProject, tags) {
     let arrString = "";
@@ -60,13 +54,13 @@ function PostList() {
   return (
     <div>
       <FilterModal
-        currentIsProjectFilter={isProjectFilterNum}
-        currentTagFilter={tagFilterArr}
+        currentIsProjectFilter={isProjectQueryNum}
+        currentTagFilter={tagFilterQueryArr}
       />
 
       <Query
         pollInterval={2000}
-        query={createFilterQuery(isProjectFilterNum, tagFilterArr)}
+        query={createFilterQuery(isProjectQueryNum, tagFilterQueryArr)}
       >
         {({ loading, error, data }) => {
           if (loading) return <p>Loading...</p>;

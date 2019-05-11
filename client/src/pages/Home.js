@@ -3,13 +3,13 @@ import React from "react";
 import PostList from "../components/PostList";
 import CreatePostModal from "../components/CreatePostModal";
 
-function Home() {
+const Home = ({ match }) => {
   return (
     <div>
       <CreatePostModal />
-      <PostList />
+      <PostList filter={match.params.filter} />
     </div>
   );
-}
+};
 
 export default Home;

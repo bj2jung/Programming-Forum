@@ -55,16 +55,19 @@ class FilterModal extends React.Component {
   }
 
   isProjectCheckboxDefaultChecked(option) {
-    if (option === "Project" && this.props.currentIsProjectFilter === "1") {
-      return true;
-    } else if (
-      option === "Individual" &&
-      this.props.currentIsProjectFilter === "2"
+    if (
+      option === "Project" &&
+      Number(this.props.currentIsProjectFilter) === 1
     ) {
       return true;
     } else if (
-      this.props.currentIsProjectFilter === "0" ||
-      this.props.currentIsProjectFilter === "3"
+      option === "Individual" &&
+      Number(this.props.currentIsProjectFilter) === 2
+    ) {
+      return true;
+    } else if (
+      Number(this.props.currentIsProjectFilter) === 0 ||
+      Number(this.props.currentIsProjectFilter) === 3
     ) {
       return true;
     } else {
@@ -130,7 +133,9 @@ class FilterModal extends React.Component {
       { arrayFormat: "comma" }
     );
     this.toggle();
-    history.push(`/?${filterQueryString}`);
+    history.push(`/home/${filterQueryString}`);
+    // history.push(`/filter/${filterQueryString}`);
+    // history.push(`/filter/?${filterQueryString}`);
   };
 
   render() {
