@@ -20,7 +20,7 @@ const User = require("../../models/User");
 
 const resolver = {
   // return 20 latests posts (with or without filter applied)
-  postsFilteredByTags: args => {
+  loadPostsInitial: args => {
     let filterCondition = {};
 
     if (args.filterInput.tags.length > 0) {
@@ -41,7 +41,37 @@ const resolver = {
 
     return Post.find(filterCondition)
       .sort({ dateCreated: -1 })
-      .limit(20)
+      .limit(10)
+      .catch(err => console.log(err));
+  },
+
+  loadMorePosts: args => {
+    let filterCondition = {};
+
+    if (args.filterInput.tags.length > 0) {
+      filterCondition = {
+        tags: { $all: args.filterInput.tags }
+      };
+    }
+
+    if (args.filterInput.isProject === 1) {
+      filterCondition.isProject = true;
+    } else if (args.filterInput.isProject === 2) {
+      filterCondition.isProject = false;
+    }
+
+    if (filterCondition === {}) {
+      filterCondition = null;
+    }
+
+    return Post.find({
+      $and: [
+        { dateCreated: { $lt: new Date(Number(args.cursor)) } },
+        filterCondition
+      ]
+    })
+      .sort({ dateCreated: -1 })
+      .limit(10)
       .catch(err => console.log(err));
   },
 

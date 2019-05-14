@@ -14,6 +14,7 @@ module.exports = schema = buildSchema(`
         creator: User!
       }
 
+
       type User {
         _id: ID!
         email: String!
@@ -21,9 +22,15 @@ module.exports = schema = buildSchema(`
         createdPosts: [Post!]
       }
 
+      type Cursor {
+        cursor: String
+      }
+
       type RootQuery{
-        postsFilteredByTags(filterInput: FilterInput): [Post]
+        loadPostsInitial(filterInput: FilterInput): [Post]
+        loadMorePosts(cursor: String, filterInput: FilterInput): [Post]
         getPostDetails(postId: String): Post
+        
       } 
       
       input PostInput {
