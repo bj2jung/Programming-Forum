@@ -27,8 +27,7 @@ module.exports = schema = buildSchema(`
       }
 
       type RootQuery{
-        loadPostsInitial(filterInput: FilterInput): [Post]
-        loadMorePosts(cursor: String, filterInput: FilterInput): [Post]
+        loadPosts(cursor: String, filterInput: FilterInput): [Post]
         getPostDetails(postId: String): Post
         
       } 

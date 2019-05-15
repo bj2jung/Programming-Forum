@@ -28,20 +28,8 @@ function PostList(props) {
   });
 
   const LOAD_POSTS = gql`
-    query($isProject: Int, $tags: [String]) {
-      loadPostsInitial(filterInput: { isProject: $isProject, tags: $tags }) {
-        isProject
-        _id
-        title
-        tags
-        dateCreated
-      }
-    }
-  `;
-
-  const LOAD_MORE_POSTS = gql`
     query($cursor: String, $isProject: Int, $tags: [String]) {
-      loadMorePosts(
+      loadPosts(
         cursor: $cursor
         filterInput: { isProject: $isProject, tags: $tags }
       ) {
@@ -66,15 +54,16 @@ function PostList(props) {
         query={LOAD_POSTS}
         variables={{
           isProject: Number(isProjectQueryNum),
-          tags: tagFilterQueryArr
+          tags: tagFilterQueryArr,
+          cursor: String(Date.now())
         }}
       >
         {({ loading, error, data, cursor, fetchMore }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
 
-          if (data.loadPostsInitial) {
-            const list = data.loadPostsInitial.map(
+          if (data.loadPosts) {
+            const list = data.loadPosts.map(
               ({ isProject, title, _id, tags }) => (
                 <PostRow
                   isProject={isProject}
@@ -87,16 +76,14 @@ function PostList(props) {
             );
 
             // set cursor to created time of last post in current list
-            cursor =
-              data.loadPostsInitial[data.loadPostsInitial.length - 1]
-                .dateCreated;
+            cursor = data.loadPosts[data.loadPosts.length - 1].dateCreated;
 
             list.push(
               <Button
                 key="loadMore"
                 onClick={() => {
                   fetchMore({
-                    query: LOAD_MORE_POSTS,
+                    query: LOAD_POSTS,
                     variables: {
                       cursor: String(cursor),
                       isProject: Number(isProjectQueryNum),
@@ -104,13 +91,13 @@ function PostList(props) {
                     },
 
                     updateQuery: (previousResult, { fetchMoreResult }) => {
-                      const previousPosts = previousResult.loadPostsInitial;
-                      const newPosts = fetchMoreResult.loadMorePosts;
+                      const previousPosts = previousResult.loadPosts;
+                      const newPosts = fetchMoreResult.loadPosts;
                       const newCursor = fetchMoreResult.cursor;
 
                       return {
                         cursor: newCursor,
-                        loadPostsInitial: [...previousPosts, ...newPosts],
+                        loadPosts: [...previousPosts, ...newPosts],
                         __typename: previousPosts.__typename
                       };
                     }
