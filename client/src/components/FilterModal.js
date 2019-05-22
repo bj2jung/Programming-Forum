@@ -13,7 +13,8 @@ import queryString from "query-string";
 import listOfTags from "../assets/listOfTags";
 
 import { createBrowserHistory } from "history";
-const history = createBrowserHistory({ forceRefresh: true });
+const history = createBrowserHistory();
+// const history = createBrowserHistory({ forceRefresh: true });
 
 class FilterModal extends React.Component {
   constructor(props) {
@@ -132,10 +133,17 @@ class FilterModal extends React.Component {
       { tags: this.state.tags, isProject: this.state.isProject },
       { arrayFormat: "comma" }
     );
+
     this.toggle();
     history.push(`/home/${filterQueryString}`);
-    // history.push(`/filter/${filterQueryString}`);
-    // history.push(`/filter/?${filterQueryString}`);
+
+    ////
+    // const historyStateObjFilter = {
+    //   tags: this.state.tags,
+    //   isProject: this.state.isProject
+    // };
+    // window.history.replaceState(historyStateObjFilter, "");
+    ////
   };
 
   render() {

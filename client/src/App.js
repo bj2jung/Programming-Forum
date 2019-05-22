@@ -15,6 +15,7 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/home" component={Home} />
+          <Route exact path="/home/:filter/:show" component={Home} />
           <Route exact path="/home/:filter" component={Home} />
           <Route exact path="/post/:postId" component={Post} />
           <Redirect from="*" to="/home" />

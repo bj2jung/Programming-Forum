@@ -43,15 +43,18 @@ const resolver = {
       args.cursor = new Date();
     }
 
-    return Post.find({
-      $and: [
-        { dateCreated: { $lt: new Date(Number(args.cursor)) } },
-        filterCondition
-      ]
-    })
-      .sort({ dateCreated: -1 })
-      .limit(10)
-      .catch(err => console.log(err));
+    return (
+      Post.find({
+        $and: [
+          { dateCreated: { $lt: new Date(Number(args.cursor)) } },
+          filterCondition
+        ]
+      })
+        .sort({ dateCreated: -1 })
+        .limit(args.show || 5)
+        // .limit(10)
+        .catch(err => console.log(err))
+    );
   },
 
   // return details of a single post

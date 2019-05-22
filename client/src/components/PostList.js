@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Query } from "react-apollo";
+// import { useApolloClient } from "react-apollo-hooks";
 import { gql } from "apollo-boost";
 import queryString from "query-string";
 import { Button } from "reactstrap";
@@ -24,13 +25,14 @@ function PostList(props) {
   }
 
   useEffect(() => {
-    console.log("Effect function ran");
+    console.log(tagFilterQueryArr);
   });
 
   const LOAD_POSTS = gql`
-    query($cursor: String, $isProject: Int, $tags: [String]) {
+    query($cursor: String, $show: Int, $isProject: Int, $tags: [String]) {
       loadPosts(
         cursor: $cursor
+        show: $show
         filterInput: { isProject: $isProject, tags: $tags }
       ) {
         isProject
@@ -41,6 +43,23 @@ function PostList(props) {
       }
     }
   `;
+  ///
+  const postsPerPage = 5;
+
+  const historyStateObj = {
+    numPosts: window.history.state.numPosts || postsPerPage
+  };
+
+  function handleLoadMorePosts() {
+    historyStateObj.numPosts += postsPerPage;
+    window.history.replaceState(historyStateObj, "");
+  }
+
+  function test() {
+    console.log(props);
+  }
+
+  ///
 
   return (
     <div>
@@ -55,6 +74,7 @@ function PostList(props) {
         variables={{
           isProject: Number(isProjectQueryNum),
           tags: tagFilterQueryArr,
+          show: window.history.state.numPosts || postsPerPage,
           cursor: String(Date.now())
         }}
       >
@@ -87,13 +107,16 @@ function PostList(props) {
                     variables: {
                       cursor: String(cursor),
                       isProject: Number(isProjectQueryNum),
-                      tags: tagFilterQueryArr
+                      tags: tagFilterQueryArr,
+                      show: postsPerPage
                     },
 
                     updateQuery: (previousResult, { fetchMoreResult }) => {
                       const previousPosts = previousResult.loadPosts;
                       const newPosts = fetchMoreResult.loadPosts;
                       const newCursor = fetchMoreResult.cursor;
+
+                      handleLoadMorePosts();
 
                       return {
                         cursor: newCursor,
