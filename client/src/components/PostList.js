@@ -56,7 +56,7 @@ function PostList(props) {
   }
 
   function test() {
-    console.log(props);
+    window.history.replaceState({ numPosts: 50 }, "");
   }
 
   ///
@@ -78,7 +78,7 @@ function PostList(props) {
           cursor: String(Date.now())
         }}
       >
-        {({ loading, error, data, cursor, fetchMore }) => {
+        {({ loading, error, data, cursor, fetchMore, refetch }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
 
@@ -99,36 +99,46 @@ function PostList(props) {
             cursor = data.loadPosts[data.loadPosts.length - 1].dateCreated;
 
             list.push(
-              <Button
-                key="loadMore"
-                onClick={() => {
-                  fetchMore({
-                    query: LOAD_POSTS,
-                    variables: {
-                      cursor: String(cursor),
-                      isProject: Number(isProjectQueryNum),
-                      tags: tagFilterQueryArr,
-                      show: postsPerPage
-                    },
+              <div>
+                <Button
+                  key="loadMore"
+                  onClick={() => {
+                    fetchMore({
+                      query: LOAD_POSTS,
+                      variables: {
+                        cursor: String(cursor),
+                        isProject: Number(isProjectQueryNum),
+                        tags: tagFilterQueryArr,
+                        show: postsPerPage
+                      },
 
-                    updateQuery: (previousResult, { fetchMoreResult }) => {
-                      const previousPosts = previousResult.loadPosts;
-                      const newPosts = fetchMoreResult.loadPosts;
-                      const newCursor = fetchMoreResult.cursor;
+                      updateQuery: (previousResult, { fetchMoreResult }) => {
+                        const previousPosts = previousResult.loadPosts;
+                        const newPosts = fetchMoreResult.loadPosts;
+                        const newCursor = fetchMoreResult.cursor;
 
-                      handleLoadMorePosts();
+                        handleLoadMorePosts();
 
-                      return {
-                        cursor: newCursor,
-                        loadPosts: [...previousPosts, ...newPosts],
-                        __typename: previousPosts.__typename
-                      };
-                    }
-                  });
-                }}
-              >
-                Load More
-              </Button>
+                        return {
+                          cursor: newCursor,
+                          loadPosts: [...previousPosts, ...newPosts],
+                          __typename: previousPosts.__typename
+                        };
+                      }
+                    });
+                  }}
+                >
+                  Load More
+                </Button>
+                <Button
+                  onClick={() => {
+                    test();
+                  }}
+                >
+                  Test function
+                </Button>
+                <Button>Test function 2</Button>
+              </div>
             );
 
             return list;

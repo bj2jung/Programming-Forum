@@ -138,11 +138,11 @@ class FilterModal extends React.Component {
     history.push(`/home/${filterQueryString}`);
 
     ////
-    // const historyStateObjFilter = {
-    //   tags: this.state.tags,
-    //   isProject: this.state.isProject
-    // };
-    // window.history.replaceState(historyStateObjFilter, "");
+    const historyStateObjFilter = {
+      tags: this.state.tags,
+      isProject: this.state.isProject
+    };
+    window.history.pushState(historyStateObjFilter, "");
     ////
   };
 
