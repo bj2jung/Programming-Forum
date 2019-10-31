@@ -20,6 +20,6 @@
     "graphql-tools": "^4.0.4",
     "merge-graphql-schemas": "^1.5.8",
     "mongodb": "^3.2.3",
-    "mongoose": "^5.5.4"
+    "mongoose": "^5.7.5"
   }
 }
